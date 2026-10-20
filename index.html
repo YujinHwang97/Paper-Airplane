@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 5th Monthsary ✈️</title>
+    <!-- Importing handwriting font -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #e2e8f0 100%);
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Sky & Clouds background */
+        .sky {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            animation: drift linear infinite;
+        }
+
+        @keyframes drift {
+            from { transform: translateX(-200px); }
+            to { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        #scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        /* Paper Airplane */
+        #plane {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            transform: translate(-100px, -100px);
+            pointer-events: none;
+            filter: drop-shadow(0 10px 8px rgba(0,0,0,0.2));
+            will-change: transform;
+        }
+
+        #plane svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffffff;
+        }
+
+        /* Envelope Element */
+        #envelope {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 90px;
+            background: #fdfbf7;
+            border-radius: 6px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: none;
+            z-index: 20;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4), box-shadow 0.2s ease;
+            user-select: none;
+        }
+
+        #envelope:hover {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        #envelope.visible {
+            transform: translate(-50%, -50%) scale(1) rotate(-2deg);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 70px solid transparent;
+            border-right: 70px solid transparent;
+            border-top: 50px solid #e6e2d3;
+            transform-origin: top;
+            transition: transform 0.4s ease 0.2s;
+        }
+
+        .envelope-body {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            border-bottom: 90px solid #f2eee3;
+            border-left: 70px solid transparent;
+            border-right: 70px solid transparent;
+            border-radius: 6px;
+        }
+
+        .envelope-label {
+            position: absolute;
+            bottom: 25px;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+
+        /* Custom Stationary Letter Card */
+        #letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 340px;
+            height: 430px;
+            background: #fffdf9;
+            padding: 35px 30px;
+            border-radius: 6px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%) scale(0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #letter.open {
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #letter h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 24px;
+            border-bottom: 2px dashed #e2dcc8;
+            padding-bottom: 8px;
+            font-family: 'Caveat', cursive;
+        }
+
+        .letter-text {
+            flex-grow: 1;
+            font-family: 'Caveat', cursive;
+            font-size: 22px;
+            color: #34495e;
+            line-height: 1.45;
+            overflow-y: auto;
+            user-select: none;
+            padding-right: 5px;
+        }
+
+        .letter-hint {
+            font-size: 11px;
+            color: #b0b0b0;
+            text-align: center;
+            margin-top: 10px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        #close-letter {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f0ede6;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            color: #7f8c8d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        #close-letter:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sky" id="sky"></div>
+
+    <div id="scene">
+        <!-- Paper Airplane -->
+        <div id="plane">
+            <svg viewBox="0 0 24 24">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+        </div>
+
+        <!-- Envelope -->
+        <div id="envelope" title="Click to open letter!">
+            <div class="envelope-body"></div>
+            <div class="envelope-flap" id="envelope-flap"></div>
+            <div class="envelope-label">Click to Open</div>
+        </div>
+
+        <!-- Letter Containing Your Message -->
+        <div id="letter">
+            <button id="close-letter">×</button>
+            <h3>Happy 5th Monthsary! ✈️💌</h3>
+            <div class="letter-text">
+                Happy 5th monthsary tamm, I can't believe we're already 5 months into our relationship. I really miss you, tam, and honestly, I don't really know what else to say other than I hope you're safe there and that you're taking good care of yourself. Don't forget to eat on time, get enough rest, and take a break whenever things get too tiring, okay? I know you have a lot of things to do, but please don't forget to look after yourself, too. Remember that I'm always here as your virtual support ^o^/
+            </div>
+            <div class="letter-hint">Click × to fold back</div>
+        </div>
+    </div>
+
+    <script>
+        // Generate clouds
+        const sky = document.getElementById('sky');
+        for (let i = 0; i < 5; i++) {
+            const cloud = document.createElement('div');
+            cloud.className = 'cloud';
+            cloud.style.width = `${Math.random() * 150 + 100}px`;
+            cloud.style.height = `${Math.random() * 40 + 20}px`;
+            cloud.style.top = `${Math.random() * 60}%`;
+            cloud.style.left = `-200px`;
+            cloud.style.animationDuration = `${Math.random() * 15 + 15}s`;
+            cloud.style.animationDelay = `${Math.random() * 5}s`;
+            sky.appendChild(cloud);
+        }
+
+        const plane = document.getElementById('plane');
+        const envelope = document.getElementById('envelope');
+        const letter = document.getElementById('letter');
+        const closeLetterBtn = document.getElementById('close-letter');
+        const envelopeFlap = document.getElementById('envelope-flap');
+
+        let isEnvelopeOpen = false;
+
+        function startFlight() {
+            envelope.style.display = 'none';
+            envelope.classList.remove('visible');
+            letter.classList.remove('open');
+            plane.style.display = 'block';
+            isEnvelopeOpen = false;
+            envelopeFlap.style.transform = 'rotateX(0deg)';
+
+            const targetX = window.innerWidth / 2;
+            const targetY = window.innerHeight / 2;
+
+            const p0 = { x: -100, y: window.innerHeight * 0.2 };
+            const p1 = { x: window.innerWidth * 0.6, y: window.innerHeight * -0.2 };
+            const p2 = { x: targetX, y: targetY };
+
+            let startTime = null;
+            const duration = 2200;
+
+            function animateFlight(timestamp) {
+                if (!startTime) startTime = timestamp;
+                let progress = (timestamp - startTime) / duration;
+                if (progress > 1) progress = 1;
+
+                const u = 1 - progress;
+                const tt = progress * progress;
+                const uu = u * u;
+
+                const x = uu * p0.x + 2 * u * progress * p1.x + tt * p2.x;
+                const y = uu * p0.y + 2 * u * progress * p1.y + tt * p2.y;
+
+                const dx = 2 * (1 - progress) * (p1.x - p0.x) + 2 * progress * (p2.x - p1.x);
+                const dy = 2 * (1 - progress) * (p1.y - p0.y) + 2 * progress * (p2.y - p1.y);
+                const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+                plane.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateFlight);
+                } else {
+                    plane.style.display = 'none';
+                    envelope.style.display = 'block';
+                    setTimeout(() => {
+                        envelope.classList.add('visible');
+                    }, 50);
+                }
+            }
+
+            requestAnimationFrame(animateFlight);
+        }
+
+        window.onload = startFlight;
+
+        envelope.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!isEnvelopeOpen) {
+                envelopeFlap.style.transform = 'rotateX(180deg)';
+                setTimeout(() => {
+                    envelope.style.display = 'none';
+                    letter.classList.add('open');
+                    isEnvelopeOpen = true;
+                }, 300);
+            }
+        });
+
+        closeLetterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            letter.classList.remove('open');
+            setTimeout(() => {
+                envelope.style.display = 'block';
+                envelopeFlap.style.transform = 'rotateX(0deg)';
+                isEnvelopeOpen = false;
+            }, 300);
+        });
+    </script>
+</body>
+</html>
